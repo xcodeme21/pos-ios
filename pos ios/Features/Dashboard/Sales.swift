@@ -1,6 +1,5 @@
 import Foundation
 
-
 struct SalesPersonResponse: Codable {
     let outError: Int?
     let outMessage: String?

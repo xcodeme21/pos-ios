@@ -87,7 +87,6 @@ struct PromoArticleItem: Decodable {
     let article_description: String?
 }
 
-
 struct PaymentMethodsResponse: Decodable {
     let statusCode: Int?
     let message: String?
@@ -109,7 +108,6 @@ struct PaymentMethodItem: Decodable, Identifiable {
     let payment_method_code: String?
     let payment_method_name: String?
 }
-
 
 struct PaymentIssuerResponse: Decodable {
     let statusCode: Int?
@@ -141,7 +139,6 @@ struct PaymentIssuerItem: Decodable, Identifiable {
     let payment_issuer_parent_code: String?
     let payment_issuer_parent_name: String?
 }
-
 
 struct ValidateCashbackResponse: Decodable {
     let statusCode: Int?

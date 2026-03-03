@@ -2,76 +2,81 @@ import SwiftUI
 
 struct TransactionView: View {
     let store: BusinessUnit
+    @StateObject private var viewModel = TransactionViewModel()
     @ObservedObject var theme = ThemeManager.shared
-
+    
+    @State private var showingSalesmanModal = false
+    @State private var showingCustomerModal = false
+    @State private var showingCheckoutModal = false
+    
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 24) {
-
-                    HStack(spacing: 14) {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(theme.primaryColor.opacity(0.12))
-                                .frame(width: 52, height: 52)
-                            Image(systemName: "storefront.fill")
-                                .font(.system(size: 24))
-                                .foregroundColor(theme.primaryColor)
-                        }
-                        VStack(alignment: .leading, spacing: 3) {
-                            Text(store.storeName)
-                                .font(.headline)
-                                .fontWeight(.semibold)
-                            Text("Kode: \(store.siteCode)")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                        Spacer()
-                        Image(systemName: "circle.fill")
-                            .font(.caption2)
-                            .foregroundColor(.green)
-                    }
-                    .padding(16)
-                    .background(Color(.systemBackground))
-                    .cornerRadius(14)
-                    .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 3)
-
-
-                    VStack(spacing: 16) {
-                        Image(systemName: "cart.fill")
-                            .font(.system(size: 52))
-                            .foregroundColor(theme.primaryColor.opacity(0.4))
-                        Text("Belum ada transaksi")
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                        Text("Mulai transaksi baru dengan menekan\ntombol di bawah ini.")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.center)
-                    }
-                    .padding(.top, 40)
-
-
-                    Button(action: {
-                        print("Transaksi baru tapped")
-                    }) {
-                        HStack {
-                            Image(systemName: "plus.circle.fill")
-                            Text("Transaksi Baru")
-                                .fontWeight(.semibold)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(16)
-                        .background(theme.primaryColor)
-                        .foregroundColor(.white)
-                        .cornerRadius(14)
-                    }
+            ZStack {
+                Color(.systemGroupedBackground).edgesIgnoringSafeArea(.all)
+                
+                VStack(spacing: 0) {
+                    OrderHeaderView(
+                        selectedSalesman: $viewModel.selectedSalesman,
+                        selectedCustomer: $viewModel.selectedCustomer,
+                        onSelectSalesman: { showingSalesmanModal = true },
+                        onSelectCustomer: { showingCustomerModal = true }
+                    )
+                    .padding(.top, 8)
+                    .padding(.bottom, 8)
+                    
+                    ProductListView(viewModel: viewModel)
                 }
-                .padding(16)
+                
+                if !viewModel.cartItems.isEmpty {
+                    CartSummaryView(
+                        totalItems: viewModel.totalCartItems,
+                        totalAmount: viewModel.totalAmount,
+                        theme: theme,
+                        action: { showingCheckoutModal = true }
+                    )
+                }
             }
-            .background(Color(.systemGroupedBackground))
             .navigationTitle("Transaksi")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                if viewModel.salesmanList.isEmpty {
+                    viewModel.fetchSalesData(siteCode: store.siteCode)
+                }
+            }
+            
+            .sheet(isPresented: $showingSalesmanModal) {
+                SelectionModalView(
+                    isPresented: $showingSalesmanModal,
+                    title: "Sales",
+                    items: viewModel.salesmanList,
+                    onSelect: { salesman in
+                        viewModel.selectedSalesman = salesman
+                    },
+                    displayString: { $0.fullName },
+                    secondaryString: { $0.salesPersonId }
+                )
+                .presentationDetents([.medium, .large])
+            }
+            .sheet(isPresented: $showingCustomerModal) {
+                SelectionModalView(
+                    isPresented: $showingCustomerModal,
+                    title: "Customer",
+                    items: viewModel.customerList,
+                    onSelect: { customer in
+                        viewModel.selectedCustomer = customer
+                    },
+                    displayString: { $0.name },
+                    secondaryString: { $0.phone }
+                )
+                .presentationDetents([.medium, .large])
+            }
+            .sheet(isPresented: $showingCheckoutModal) {
+                CheckoutModalSheet(
+                    isPresented: $showingCheckoutModal,
+                    viewModel: viewModel
+                )
+                .presentationDetents([.large])
+            }
         }
     }
 }

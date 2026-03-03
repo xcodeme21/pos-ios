@@ -76,7 +76,6 @@ struct ProfilView: View {
                         }
                     }
 
-
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Toko Aktif")
                             .font(.subheadline)
@@ -103,7 +102,6 @@ struct ProfilView: View {
                         .background(Color(.systemBackground))
                         .cornerRadius(16)
                     }
-
 
                     VStack(alignment: .leading, spacing: 8) {
                         Button(action: {

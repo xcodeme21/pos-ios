@@ -25,10 +25,9 @@ struct SplashScreenView: View {
                 
                 VStack(spacing: 8) {
                     if !step3 {
-                        // First Text: POINT OF SALES
                         Text("POINT OF SALES")
-                            .font(.system(size: 32, weight: .heavy, design: .default))
-                            .tracking(8) // Wide letter spacing
+                            .font(.system(size: 36, weight: .bold, design: .rounded))
+                            .tracking(6)
                             .foregroundColor(step2 ? .black : .white)
                             .scaleEffect(step1 ? 1.0 : 1.5)
                             .opacity(step1 ? 1.0 : 0.0)
@@ -36,7 +35,6 @@ struct SplashScreenView: View {
                             .animation(.easeOut(duration: 1.2), value: step1)
                             .animation(.easeInOut(duration: 0.8), value: step2)
                     } else {
-                        // Second Text: by TechDev POS
                         VStack(spacing: 4) {
                             Text("by")
                                 .font(.system(size: 16, weight: .regular, design: .serif))
@@ -83,8 +81,6 @@ struct SplashScreenView: View {
         }
     }
 }
-
-
 
 #Preview {
     SplashScreenView()

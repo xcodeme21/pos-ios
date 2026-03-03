@@ -1,6 +1,5 @@
 import Foundation
 
-
 struct LoginResponse: Codable {
     let appName: String?
     let build: String?
@@ -15,7 +14,6 @@ struct LoginData: Codable {
     let expired: Int?
     let user_id: String?
 }
-
 
 struct BusinessUnitResponse: Codable {
     let appName: String?
@@ -49,7 +47,6 @@ struct BusinessUnit: Codable, Identifiable, Hashable {
         return "Company: \(companyCode)"
     }
 }
-
 
 struct StoreDetailResponse: Codable {
     let appName: String?

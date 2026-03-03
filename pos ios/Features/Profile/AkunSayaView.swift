@@ -122,7 +122,6 @@ struct AkunSayaView: View {
     }
 }
 
-
 struct AkunInfoRow: View {
     let icon: String
     let label: String
